@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -22,7 +24,7 @@ public class Import_File extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textUrl;
-	private JTextPane textPane;
+	private JTextPane txtTitle;
 
 	/**
 	 * Launch the application.
@@ -62,7 +64,7 @@ public class Import_File extends JFrame {
 		contentPane.add(textUrl);
 		textUrl.setColumns(10);
 		
-		JButton btnNewButton = new JButton("Open");
+		JButton btnNewButton = new JButton("Chooser");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
@@ -75,27 +77,48 @@ public class Import_File extends JFrame {
 				{
 					String path = fileChooser.getSelectedFile().getAbsolutePath(); // gán đường dẫn
 					textUrl.setText(path);
-					textPane.setText(listAllFile(path, result));
+					txtTitle.setText(listAllFile(path, result));
 				}
 			}
 		});
 		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 20));
-		btnNewButton.setBounds(534, 25, 97, 46);
+		btnNewButton.setBounds(507, 25, 124, 46);
 		contentPane.add(btnNewButton);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(34, 119, 602, 245);
 		contentPane.add(scrollPane);
 		
-		textPane = new JTextPane();
-		scrollPane.setViewportView(textPane);
+		txtTitle = new JTextPane();
+		txtTitle.setFont(new Font("Tahoma", Font.BOLD, 12));
+		scrollPane.setViewportView(txtTitle);
+		
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Tạo hành động xác nhận muốn xóa file
+				int chooser = JOptionPane.showConfirmDialog(null, "Are you sure detele items?");
+				// Nếu không đồng ý xóa thì dừng
+				if(chooser == JOptionPane.NO_OPTION)
+					return;
+				
+				// Nếu đồng ý xóa
+				String path = textUrl.getText();
+				deleteFile(path);
+			}
+		});
+		btnDelete.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnDelete.setBounds(510, 388, 126, 46);
+		contentPane.add(btnDelete);
 	}
 	
+	
+	// Tạo phương thức chứa danh sách các file con
 	private String listAllFile(String path, int level)
 	{
 		File myFile = new File(path);
 		// Kiểm tra tập tin không tồn tại
-		if(myFile.exists()) return "";
+		if(!myFile.exists()) return "";
 		
 		// Tập tin đã tồn tại
 		String result = "";
@@ -103,15 +126,36 @@ public class Import_File extends JFrame {
 		for (int i = 0; i < level; i++) {
 			result+="\t";
 		}
-		result += myFile.getName() = "\n";
+		result += myFile.getName() + "\n";
 		
 		// nếu là file thì không làm gì
 		if(myFile.isFile()) return result;
 		
-		for(File file : myFile.getName())
+		for(File file : myFile.listFiles())
 		{
 			result+=listAllFile(file.getAbsolutePath(), level + 1);
 		}
 		return result;
+	}
+	
+	// Tạo phương thức xóa file
+	private void deleteFile(String path)
+	{
+		try {
+			File myFile = new File(path);
+			// Nếu là thư mục cần xóa các tập tin con trước
+			if(myFile.isDirectory())
+			{
+				for(File file : myFile.listFiles())
+				{
+					deleteFile(file.getAbsolutePath());
+				}
+			}
+			// Xóa bản thân nó
+			myFile.delete();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 	}
 }
