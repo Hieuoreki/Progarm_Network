@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.Iterator;
 import java.awt.event.ActionEvent;
 
-public class Import_File extends JFrame {
+public class Tree_Folder extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -33,7 +33,7 @@ public class Import_File extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Import_File frame = new Import_File();
+					Tree_Folder frame = new Tree_Folder();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -45,7 +45,7 @@ public class Import_File extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Import_File() {
+	public Tree_Folder() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 679, 501);
 		contentPane = new JPanel();
@@ -69,7 +69,7 @@ public class Import_File extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
 				// Mở folder
-				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				// tạo biến kiểm tra xem có folder đc chọn k
 				int result = fileChooser.showOpenDialog(null);
 				
@@ -110,6 +110,39 @@ public class Import_File extends JFrame {
 		btnDelete.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btnDelete.setBounds(510, 388, 126, 46);
 		contentPane.add(btnDelete);
+		
+		JButton btnRename = new JButton("Rename");
+		btnRename.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String newFileName = JOptionPane.showInputDialog(null, "Input file name");
+				try {
+					// File cũ
+					String path = textUrl.getText();
+					File myFile = new File(path);
+					
+					// File mới
+					String newPath = myFile.getParent() + "\\" + newFileName;
+					File newFile = new File(newPath);
+					
+					// Thay đổi tên sang tập tin mới
+					if(myFile.renameTo(newFile))
+					{
+						textUrl.setText(newFile.getAbsolutePath());
+						JOptionPane.showMessageDialog(null, "Rename file success!");
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null, "Rename file none!");
+					}
+				} catch (Exception e2) {
+					// TODO: handle exception
+					e2.printStackTrace();
+				}
+			}
+		});
+		btnRename.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnRename.setBounds(342, 388, 126, 46);
+		contentPane.add(btnRename);
 	}
 	
 	
