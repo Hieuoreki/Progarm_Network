@@ -16,6 +16,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Iterator;
 import java.awt.event.ActionEvent;
 
@@ -141,8 +144,55 @@ public class Tree_Folder extends JFrame {
 			}
 		});
 		btnRename.setFont(new Font("Tahoma", Font.BOLD, 20));
-		btnRename.setBounds(342, 388, 126, 46);
+		btnRename.setBounds(371, 388, 126, 46);
 		contentPane.add(btnRename);
+		
+		JButton btnMove = new JButton("Move");
+		btnMove.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnMove.setBounds(235, 388, 126, 46);
+		contentPane.add(btnMove);
+		
+		JButton btnCopy = new JButton("Copy");
+		btnCopy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int result = fileChooser.showOpenDialog(null);
+				if(result == JFileChooser.APPROVE_OPTION)
+				{
+					// Điểm đầu
+					String source = textUrl.getText();
+					// Điểm đến
+					String destination = fileChooser.getSelectedFile().getAbsolutePath();
+					copy(source, destination);
+				}
+			}
+		});
+		btnCopy.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnCopy.setBounds(99, 388, 126, 46);
+		contentPane.add(btnCopy);
+	}
+	
+	private void copy(String source, String destination)
+	{
+		try {
+			// Tạo ra 1 đối tượng
+			Path sourcePath = Path.of(source);
+			Path destinationPath = Path.of(destination);
+			Path newPath = destinationPath.resolve(sourcePath.getFileName());
+			Files.copy(sourcePath, newPath, StandardCopyOption.COPY_ATTRIBUTES);
+			File myFile = new File(source);
+			if(myFile.isDirectory())
+			{
+				for(File file : myFile.listFiles())
+				{
+					copy(file.getAbsolutePath(), destination + "\\" + sourcePath.getFileName());
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 	}
 	
 	
