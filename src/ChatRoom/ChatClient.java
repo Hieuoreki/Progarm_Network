@@ -19,7 +19,7 @@ public class ChatClient {
 			ClienttListener client = new ClienttListener(socket);
 			new Thread(client).start();
 			
-			// Liên tục đọc dữ liệu từu Scanner
+			// Liên tục đọc dữ liệu từ Scanner
 			OutputStream output = socket.getOutputStream();
 			Scanner sc = new Scanner(System.in);
 			

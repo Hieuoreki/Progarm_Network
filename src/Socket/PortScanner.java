@@ -12,7 +12,7 @@ public class PortScanner {
 	public static void checkPort(String urlString)
 	{
 		int startPort = 1;
-		int endPort = 10000;
+		int endPort = 100;
 		System.out.println("Đang quét các port của máy: " + urlString);
 		
 		for (int i = startPort; i < endPort; i++) 

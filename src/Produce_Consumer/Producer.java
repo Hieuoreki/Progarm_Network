@@ -23,7 +23,7 @@ public class Producer extends Thread {
 			{
 				try {
 					buffer.addProduct(i++, ID);
-					sleep((long)Math.random()*100); // cho dây chuyền nghỉ 0.5s
+					sleep((long)Math.random()*100); 
 				} catch (Exception e) {
 					// TODO: handle exception
 					e.printStackTrace();
